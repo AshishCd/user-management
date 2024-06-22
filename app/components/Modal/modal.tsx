@@ -1,13 +1,12 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
+import { AddEditFormModal } from "../addEditFormModal";
+import DialogContent from '@mui/material/DialogContent';
+import styles from "./modal.module.css";
 
 interface IModalProps {
     handleClose: () => void;
@@ -25,17 +24,36 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 export const Modal: React.FunctionComponent<IModalProps> = ({
-     handleClose, open, type
+    handleClose, open, type
 }) => {
-    return(
-        <React.Fragment>
+    const getheading = (type: string) => {
+        if (type === "add") {
+            return "Add Records"
+        } else if (type === "edit") {
+            return "Edit Record"
+        }
+        return "Delete Record"
+    };
+
+    const renderContent = () => {
+        if (type === "delete") {
+            return (
+                <div>{"delete"}</div>
+            )
+        } else {
+            return <AddEditFormModal />
+        }
+    }
+
+    return (
+        <div className={styles.modalWrapper}>
             <BootstrapDialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    {type === "add" ? "Are you sure you want to delete" : "Edit User Data"}
+                    {getheading(type)}
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -49,9 +67,10 @@ export const Modal: React.FunctionComponent<IModalProps> = ({
                 >
                     <CloseIcon />
                 </IconButton>
-                <div>{"Hello"}</div>
-                
+                <DialogContent dividers>
+                    {renderContent()}
+                </DialogContent>
             </BootstrapDialog>
-        </React.Fragment>
+        </div>
     )
 }

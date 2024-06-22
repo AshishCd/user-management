@@ -15,7 +15,7 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
     const [open, setOpen] = useState(false);
     const [modalType, setModalType] = useState<string>("");
 
-    const handleClickOpen = (id: number, type: string) => {
+    const handleClickOpen = (type: string, id?: number) => {
         setOpen(true);
         setModalType(type);
     };

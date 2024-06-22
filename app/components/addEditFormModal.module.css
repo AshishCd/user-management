@@ -1,0 +1,19 @@
+.form {
+    min-width: 500px;
+}
+
+.inputBlock {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.inputBox {
+    padding: 8px;
+    width: 100%;
+}
+
+.inputLabel {
+    width: 20%;
+}

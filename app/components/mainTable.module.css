@@ -1,0 +1,10 @@
+.tbIcon {
+    cursor:pointer;
+  }
+
+  .addRecords {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-bottom: 16px;
+  }

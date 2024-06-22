@@ -5,7 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import styles from "./table.module.css";
+import styles from "./mainTable.module.css";
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,13 +14,14 @@ import { Button } from '@mui/material';
 
 interface IMainTableProps {
     rows: IUserData[];
-    handleClickOpen: (id: number, type: string) => void;
+    handleClickOpen: (type: string, id?: number) => void;
     handleDelete: (id: number, type: string) => void;
 }
 
 export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, handleClickOpen, handleDelete }) => {
     return (
         <div>
+            <div className={styles.addRecords}><Button variant="outlined" onClick={() => handleClickOpen("add")}>{"Add Record"}</Button></div>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -46,12 +47,12 @@ export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, hand
                                 <TableCell align="left">{row.username}</TableCell>
                                 <TableCell align="left">{row.email}</TableCell>
                                 <TableCell align="left" className={styles.tbIcon}>
-                                    <Button variant="text" onClick={() => handleClickOpen(row.id, "edit")}>
+                                    <Button variant="text" onClick={() => handleClickOpen("edit", row.id)}>
                                         <EditIcon />
                                     </Button>
                                 </TableCell>
                                 <TableCell align="center" className={styles.tbIcon}>
-                                    <Button variant="text" onClick={() => handleDelete(row.id, "add")}>
+                                    <Button variant="text" onClick={() => handleDelete(row.id, "delete")}>
                                         <DeleteIcon />
                                     </Button>
                                 </TableCell>
