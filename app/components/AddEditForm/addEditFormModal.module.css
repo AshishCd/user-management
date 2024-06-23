@@ -1,0 +1,36 @@
+.form {
+    min-width: 500px;
+}
+
+.inputBlock {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.inputBox {
+    padding: 8px;
+    width: 100%;
+}
+
+.inputLabel {
+    width: 25%;
+}
+
+.formSubmit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.error {
+    font-size: 12px;
+    color: red;
+    margin-top:5px;
+}
+
+.successMessage {
+    color: green;
+}

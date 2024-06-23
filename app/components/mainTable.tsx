@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IUserData } from '../interfaces/interface';
 import { Button } from '@mui/material';
+import { Constants } from '@/util/constants';
 
 interface IMainTableProps {
     rows: IUserData[];
@@ -21,7 +22,7 @@ interface IMainTableProps {
 export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, handleClickOpen, handleDelete }) => {
     return (
         <div>
-            <div className={styles.addRecords}><Button variant="outlined" onClick={() => handleClickOpen("add")}>{"Add Record"}</Button></div>
+            <div className={styles.addRecords}><Button variant="outlined" onClick={() => handleClickOpen(Constants.ADD)}>{"Add Record"}</Button></div>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>

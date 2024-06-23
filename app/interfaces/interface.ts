@@ -4,3 +4,4 @@ export interface IUserData {
     name: string;
     username: string;
 }
+

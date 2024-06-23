@@ -4,35 +4,31 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { AddEditFormModal } from "../addEditFormModal";
+import { AddEditFormModal } from "../AddEditForm/addEditFormModal";
 import DialogContent from '@mui/material/DialogContent';
 import styles from "./modal.module.css";
+import { Constants } from '@/util/constants';
+import { IUserData } from '@/app/interfaces/interface';
 
 interface IModalProps {
     handleClose: () => void;
     open: boolean;
     type: string;
-}
+    addRecordToExistingTable: (record: IUserData) => void;
+    currentUser: IUserData | null;
+    editExistingRecord: (values: { name: string, username: string, email: string }) => void;
+};
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
-}));
-
-export const Modal: React.FunctionComponent<IModalProps> = ({
-    handleClose, open, type
-}) => {
+export const Modal: React.FunctionComponent<IModalProps> = ({ handleClose, open, type, addRecordToExistingTable, currentUser, editExistingRecord }) => {
     const getheading = (type: string) => {
-        if (type === "add") {
+        if (type === Constants.ADD) {
             return "Add Records"
-        } else if (type === "edit") {
+        } else if (type === Constants.EDIT) {
             return "Edit Record"
+        } else if (type === Constants.DELETE) {
+            return "Delete Record"
         }
-        return "Delete Record"
+
     };
 
     const renderContent = () => {
@@ -41,16 +37,17 @@ export const Modal: React.FunctionComponent<IModalProps> = ({
                 <div>{"delete"}</div>
             )
         } else {
-            return <AddEditFormModal />
+            return <AddEditFormModal editExistingRecord={editExistingRecord} currentUser={currentUser} addRecordToExistingTable={addRecordToExistingTable} type={type} />
         }
     }
 
     return (
         <div className={styles.modalWrapper}>
-            <BootstrapDialog
+            <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
+                fullWidth={true}
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                     {getheading(type)}
@@ -70,7 +67,7 @@ export const Modal: React.FunctionComponent<IModalProps> = ({
                 <DialogContent dividers>
                     {renderContent()}
                 </DialogContent>
-            </BootstrapDialog>
+            </Dialog>
         </div>
     )
 }
