@@ -5,3 +5,4 @@ export interface IUserData {
     username: string;
 }
 
+export type Order = 'asc' | 'desc';

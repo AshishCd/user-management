@@ -2,9 +2,10 @@
     cursor:pointer;
   }
 
-  .addRecords {
+  .tableHeader {
     display: flex;
     flex-direction: row;
-    justify-content: end;
-    margin-bottom: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding:0px 16px;
   }

@@ -96,7 +96,7 @@ export const AddEditFormModal: React.FunctionComponent<IAddEditFormModalProps> =
 
     const renderView = () => {
         if (isSuccess) {
-            return <div className={styles.successMessage}>{`Done, your new data has been ${type === Constants.EDIT ? "updated" : "added"} succesfully!`}</div>
+            return <div className={styles.successMessage}>{`Done, your data has been ${type === Constants.EDIT ? "updated" : "added"} succesfully!`}</div>
         } else {
             return (
                 <form className={styles.form} onSubmit={handleSubmit}>

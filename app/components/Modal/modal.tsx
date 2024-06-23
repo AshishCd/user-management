@@ -9,6 +9,9 @@ import DialogContent from '@mui/material/DialogContent';
 import styles from "./modal.module.css";
 import { Constants } from '@/util/constants';
 import { IUserData } from '@/app/interfaces/interface';
+import { DeleteRecord } from '../Delete/deleteRecord';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 interface IModalProps {
     handleClose: () => void;
@@ -17,9 +20,10 @@ interface IModalProps {
     addRecordToExistingTable: (record: IUserData) => void;
     currentUser: IUserData | null;
     editExistingRecord: (values: { name: string, username: string, email: string }) => void;
+    deleteExistingRecord: () => void;
 };
 
-export const Modal: React.FunctionComponent<IModalProps> = ({ handleClose, open, type, addRecordToExistingTable, currentUser, editExistingRecord }) => {
+export const Modal: React.FunctionComponent<IModalProps> = ({ handleClose, open, type, addRecordToExistingTable, currentUser, editExistingRecord, deleteExistingRecord }) => {
     const getheading = (type: string) => {
         if (type === Constants.ADD) {
             return "Add Records"
@@ -32,13 +36,30 @@ export const Modal: React.FunctionComponent<IModalProps> = ({ handleClose, open,
     };
 
     const renderContent = () => {
-        if (type === "delete") {
+        if (type === Constants.DELETE) {
             return (
-                <div>{"delete"}</div>
+                <DeleteRecord record={currentUser} />
             )
-        } else {
+        } else if(type === Constants.EDIT || type === Constants.ADD) {
             return <AddEditFormModal editExistingRecord={editExistingRecord} currentUser={currentUser} addRecordToExistingTable={addRecordToExistingTable} type={type} />
         }
+    }
+
+    const handleDelete = () => {
+        deleteExistingRecord();
+    }
+
+    const renderButtonsForDelete = () => {
+        return (
+            type === Constants.DELETE && <DialogActions>
+                <Button color="error" onClick={handleDelete}>
+                    Delete
+                </Button>
+                <Button onClick={handleClose}>
+                    Cancel
+                </Button>
+            </DialogActions>
+        )
     }
 
     return (
@@ -67,6 +88,7 @@ export const Modal: React.FunctionComponent<IModalProps> = ({ handleClose, open,
                 <DialogContent dividers>
                     {renderContent()}
                 </DialogContent>
+                {renderButtonsForDelete()}
             </Dialog>
         </div>
     )

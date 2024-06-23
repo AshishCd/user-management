@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,33 +7,54 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import styles from "./mainTable.module.css";
-import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IUserData } from '../interfaces/interface';
-import { Button } from '@mui/material';
+import { Button, TableSortLabel, TextField } from '@mui/material';
 import { Constants } from '@/util/constants';
 
 interface IMainTableProps {
     rows: IUserData[];
     handleClickOpen: (type: string, id?: number) => void;
-    handleDelete: (id: number, type: string) => void;
+    handleDelete: (type: string, id: number,) => void;
+    orderBy: string;
+    handleRequestSort: (property: keyof IUserData) => void;
+    order: string;
+    searchTerm: string;
+    handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, handleClickOpen, handleDelete }) => {
+export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, handleClickOpen, handleDelete, orderBy, handleRequestSort, order, searchTerm, handleSearchChange }) => {
     return (
         <div>
-            <div className={styles.addRecords}><Button variant="outlined" onClick={() => handleClickOpen(Constants.ADD)}>{"Add Record"}</Button></div>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableContainer component={Paper} sx={{ width: '100%', maxWidth: '800px', margin: 'auto', minWidth:'800px'}}>
+            <div className={styles.tableHeader}>
+                <TextField
+                    label="Search by name"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{ margin: '16px' }}
+                    size='small'
+                />
+                <Button variant="outlined" onClick={() => handleClickOpen(Constants.ADD)}>{"Add Record"}</Button></div>
+                <Table sx={{ minWidth: 750 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>{"Id"}</TableCell>
+                            <TableCell key={'id'}>
+                                <TableSortLabel
+                                    active={orderBy === 'id'}
+                                    direction={'asc'}
+                                    onClick={() => handleRequestSort('id')}
+                                >
+                                    {"Id"}
+                                </TableSortLabel>
+                            </TableCell>
                             <TableCell align="left">{"Name"}</TableCell>
                             <TableCell align="left">{"UserName"}</TableCell>
                             <TableCell align="left">{"Email"}</TableCell>
-                            <TableCell align="left">{"Edit"}</TableCell>
-                            <TableCell align="left">{"Delete"}</TableCell>
+                            <TableCell align="center">{"Edit"}</TableCell>
+                            <TableCell align="center">{"Delete"}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -53,7 +75,7 @@ export const Maintable: React.FunctionComponent<IMainTableProps> = ({ rows, hand
                                     </Button>
                                 </TableCell>
                                 <TableCell align="center" className={styles.tbIcon}>
-                                    <Button variant="text" onClick={() => handleDelete(row.id, "delete")}>
+                                    <Button variant="text" onClick={() => handleDelete("delete", row.id)}>
                                         <DeleteIcon />
                                     </Button>
                                 </TableCell>

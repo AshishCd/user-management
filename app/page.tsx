@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { IUserData } from './interfaces/interface';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { IUserData, Order } from './interfaces/interface';
 import axios from 'axios';
 import styles from "./page.module.css";
 import { Maintable } from './components/mainTable';
@@ -16,6 +16,9 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
     const [open, setOpen] = useState(false);
     const [modalType, setModalType] = useState<string>("");
     const [currentUser, setCurrentUser] = useState<IUserData | null>(null);
+    const [order, setOrder] = useState<Order>('asc');
+    const [orderBy, setOrderBy] = useState<keyof IUserData>('id');
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const handleClickOpen = (type: string, id?: number | undefined) => {
         setOpen(true);
@@ -24,6 +27,26 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
             filterCurrentUser(id as number);
         }
     };
+
+    const handleRequestSort = (property: keyof IUserData) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const filteredUserData = userData.filter((user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const sortedUserData = [...filteredUserData].sort((a, b) => {
+        if (a[orderBy] < b[orderBy]) {
+            return order === 'asc' ? -1 : 1;
+        }
+        if (a[orderBy] > b[orderBy]) {
+            return order === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
 
     const filterCurrentUser = (id: number) => {
         const filtredUser = userData?.filter((user) => {
@@ -39,17 +62,38 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
         setCurrentUser(null);
     };
 
-    const handleDelete = (id: number, type: string) => {
+    const handleDelete = (type: string, id: number) => {
         setOpen(true);
         setModalType(type);
+        filterCurrentUser(id as number);
     }
 
     const fetchUserData = () => {
         axios.get(Constants.GETURL).then((res) => {
-            console.log(res);
             setUserData(res.data);
         });
     }
+
+    const deleteExistingRecord = () => {
+        const existingRecords = [...userData];
+        const filteredRecords = existingRecords.filter((record) => {
+            return record.id !== currentUser?.id
+        });
+        if (currentUser?.id as number > 10) {
+            setUserData(filteredRecords);
+        }
+        axios.delete(`${Constants.GETURL}/:${currentUser?.id}`).then((res) => {
+            //this is just a fake API, it won't actually delete the record that mean passing the ID which is unknow to it will fail the API call
+            if (res.status == 200) {
+                setUserData(filteredRecords);
+            };
+        }).catch((error) => console.log(error));
+        handleClose();
+    };
+
+    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+    };
 
     const addRecordToExistingTable = (record: IUserData) => {
         record.id = userData[userData.length - 1].id + 1;
@@ -77,20 +121,37 @@ const Home: React.FunctionComponent<IHomeProps> = () => {
         fetchUserData();
     }, []);
 
-    const rows = userData?.map((data) => {
+    const rows = sortedUserData?.map((data) => {
         return {
             id: data.id,
             name: data.name,
             username: data.username,
             email: data.email,
         }
-    })
+    });
 
     return (
         <main className={styles.main}>
             <div className={styles.mainHeader}>{"User Management System"}</div>
-            <Maintable handleClickOpen={handleClickOpen} handleDelete={handleDelete} rows={rows} />
-            <Modal editExistingRecord={editExistingRecord} currentUser={currentUser} addRecordToExistingTable={addRecordToExistingTable} handleClose={handleClose} open={open} type={modalType} />
+            <Maintable
+                order={order}
+                orderBy={orderBy}
+                handleRequestSort={handleRequestSort}
+                handleClickOpen={handleClickOpen}
+                handleDelete={handleDelete}
+                rows={rows}
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+            />
+            <Modal
+                editExistingRecord={editExistingRecord}
+                currentUser={currentUser}
+                addRecordToExistingTable={addRecordToExistingTable}
+                handleClose={handleClose}
+                open={open}
+                type={modalType}
+                deleteExistingRecord={deleteExistingRecord}
+            />
         </main>
     )
 };
